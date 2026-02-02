@@ -1,0 +1,156 @@
+:root {
+  --neon: #00f2ff;
+  --primary: #001a33;
+  --bg: #ffffff;
+  --text: #111111;
+  --glass: rgba(255, 255, 255, 0.85);
+  --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Стили для темной темы */
+body.dark-theme {
+  --bg: #000a14;
+  --text: #ffffff;
+  --glass: rgba(0, 26, 51, 0.85);
+}
+
+* { 
+  margin: 0; padding: 0; box-sizing: border-box; 
+  outline: none; user-select: none; 
+  font-family: 'Nunito', sans-serif; 
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.4;
+  transition: background 0.5s;
+}
+
+#bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+/* Шапка сайта */
+header {
+  position: fixed;
+  top: 0; width: 100%; height: 65px;
+  padding: 0 5%;
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--glass);
+  backdrop-filter: blur(15px);
+  z-index: 1000;
+  border-bottom: 3px solid var(--neon);
+}
+
+.logo { font-size: 24px; font-weight: 900; color: var(--text); cursor: pointer; }
+.logo span { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+
+.nav-links { display: flex; gap: 15px; align-items: center; }
+.nav-item {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  color: var(--text); cursor: pointer; transition: var(--transition);
+}
+.nav-item:hover, .nav-item.active { color: var(--neon); transform: scale(1.1); }
+
+.theme-toggle {
+  width: 35px; height: 35px; border-radius: 50%;
+  background: var(--neon); color: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px;
+}
+
+/* Секции и центрирование */
+section {
+  width: 100%; min-height: 100vh;
+  display: none;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;    
+  padding: 80px 5% 40px;  
+  opacity: 0; transform: scale(0.98) translateY(10px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+
+section.active { display: flex; opacity: 1; transform: scale(1) translateY(0); }
+
+.container { width: 100%; max-width: 1100px; text-align: center; }
+
+.glass-box {
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  padding: 40px;
+  border: 3px solid var(--neon);
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: clamp(28px, 6vw, 70px);
+  font-weight: 900;
+  line-height: 0.9; margin-bottom: 20px; color: var(--text);
+}
+
+h1 span { color: var(--neon); }
+
+/* Проекты */
+.project-grid {
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px; width: 100%; margin-top: 10px;
+}
+.project-card {
+  background: var(--primary); color: white;
+  border: 3px solid var(--neon);
+  border-radius: 20px; overflow: hidden;
+  text-align: left; transition: var(--transition);
+}
+.project-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,242,255,0.4); }
+
+.project-img-placeholder {
+  width: 100%; height: 180px;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+}
+.project-img-placeholder img { height: 80%; object-fit: contain; }
+.project-content { padding: 20px; }
+
+/* Калькулятор */
+.calc-wrapper { display: flex; justify-content: center; }
+.order-panel {
+  width: 100%; max-width: 700px;
+  background: var(--primary); color: white;
+  padding: 35px; text-align: left;
+  border-radius: 30px; border: 4px solid var(--neon);
+}
+.field-box {
+  width: 100%; padding: 15px; margin-bottom: 12px;
+  background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 242, 255, 0.4);
+  color: white; font-size: 16px; border-radius: 12px;
+}
+.field-box:focus { border-color: var(--neon); }
+
+.price-display {
+  display: flex; justify-content: space-between; 
+  margin-bottom: 15px; background: rgba(0,242,255,0.1); 
+  padding: 15px; border-radius: 12px;
+}
+
+.btn-action {
+  width: 100%; padding: 18px; background: var(--neon);
+  color: var(--primary); border: none; font-weight: 900;
+  text-transform: uppercase; cursor: pointer; border-radius: 12px;
+  transition: var(--transition);
+}
+.btn-action:disabled { opacity: 0.2; cursor: not-allowed; }
+
+#status { margin-top: 10px; text-align: center; color: var(--neon); font-weight: 900; }
+
+/* Футер */
+footer { padding: 25px; background: #000; color: white; text-align: center; font-size: 12px; }
+
+/* Адаптация */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  h1 { font-size: 35px; }
+  .order-panel { padding: 20px; }
+}

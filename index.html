@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ваш текст |строй</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --neon: #00f2ff;
+      --primary: #001a33;
+      --bg: #ffffff;
+      --text: #111111;
+      --glass: rgba(255, 255, 255, 0.85);
+      --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body.dark-theme {
+      --bg: #000a14;
+      --text: #ffffff;
+      --glass: rgba(0, 26, 51, 0.85);
+    }
+
+    * { 
+        margin: 0; padding: 0; box-sizing: border-box; 
+        outline: none; user-select: none; 
+        font-family: 'Nunito', sans-serif; 
+    }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.4;
+      transition: background 0.5s;
+    }
+
+    #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+    header {
+      position: fixed;
+      top: 0; width: 100%; height: 65px;
+      padding: 0 5%;
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--glass);
+      backdrop-filter: blur(15px);
+      z-index: 1000;
+      border-bottom: 3px solid var(--neon);
+    }
+
+    .logo { font-size: 24px; font-weight: 900; color: var(--text); cursor: pointer; }
+    .logo span { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+
+    .nav-links { display: flex; gap: 15px; align-items: center; }
+    .nav-item {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      color: var(--text); cursor: pointer; transition: var(--transition);
+    }
+    .nav-item:hover, .nav-item.active { color: var(--neon); transform: scale(1.1); }
+
+    .theme-toggle {
+      width: 35px; height: 35px; border-radius: 50%;
+      background: var(--neon); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px;
+    }
+
+    section {
+      width: 100%; min-height: 100vh;
+      display: none;
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center;    
+      padding: 80px 5% 40px;  
+      opacity: 0; transform: scale(0.98) translateY(10px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+
+    section.active { display: flex; opacity: 1; transform: scale(1) translateY(0); }
+
+    .container { width: 100%; max-width: 1100px; text-align: center; }
+
+    .glass-box {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      padding: 40px;
+      border: 3px solid var(--neon);
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 6vw, 70px);
+      font-weight: 900;
+      line-height: 0.9; margin-bottom: 20px; color: var(--text);
+    }
+
+    /* СЕТКА ПРОЕКТОВ - 4 БЛОКА */
+    .project-grid {
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px; width: 100%; margin-top: 10px;
+    }
+    .project-card {
+      background: var(--primary); color: white;
+      border: 3px solid var(--neon);
+      border-radius: 20px; overflow: hidden;
+      text-align: left; transition: var(--transition);
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,242,255,0.4); }
+    
+    .project-img {
+      width: 100%; height: 180px;
+      background-image: url('https://i.ibb.co/VYpYpYp/dws-logo.png'); /* Заменится на ваше фото при наличии прямой ссылки */
+      background-size: cover; background-position: center;
+      border-bottom: 2px solid var(--neon);
+    }
+    /* Заглушка, если нет ссылки, используем ваш лого как фон через стили */
+    .project-img-placeholder {
+        width: 100%; height: 180px;
+        background: #000;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .project-img-placeholder img { height: 80%; object-fit: contain; }
+
+    .project-content { padding: 20px; }
+
+    /* КАЛЬКУЛЯТОР */
+    .order-panel {
+      width: 100%; max-width: 700px;
+      background: var(--primary); color: white;
+      padding: 35px; text-align: left;
+      border-radius: 30px; border: 4px solid var(--neon);
+    }
+    .field-box {
+      width: 100%; padding: 15px; margin-bottom: 12px;
+      background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 242, 255, 0.4);
+      color: white; font-size: 16px; border-radius: 12px;
+    }
+
+    .btn-action {
+      width: 100%; padding: 18px; background: var(--neon);
+      color: var(--primary); border: none; font-weight: 900;
+      text-transform: uppercase; cursor: pointer; border-radius: 12px;
+      transition: var(--transition);
+    }
+    .btn-action:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    footer { padding: 25px; background: #000; color: white; text-align: center; font-size: 12px; }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+  <canvas id="bg-canvas"></canvas>
+
+  <header>
+    <div class="logo" onclick="nav('home')">DWS<span>.MASTER</span></div>
+    <nav class="nav-links">
+      <div class="nav-item active" onclick="nav('home')">Главная</div>
+      <div class="nav-item" onclick="nav('about')">О компании</div>
+      <div class="nav-item" onclick="nav('projects')">Проекты</div>
+      <div class="nav-item" onclick="nav('calc')">Расчет</div>
+      <div class="nav-item" onclick="nav('contact')">Контакты</div>
+      <div class="theme-toggle" onclick="toggleTheme()">🌓</div>
+    </nav>
+  </header>
+
+  <!-- HOME -->
+  <section id="home" class="active">
+    <div class="container">
+      <div class="glass-box">
+        <h1>ПРЕМИУМ <span>СТРОИТЕЛЬСТВО</span></h1>
+        <p style="font-size: 22px; font-weight: 600;">Ваш текст. Мы строим круто, надежно и красиво!</p>
+      </div>
+      <button class="btn-action" style="width: auto; padding: 15px 50px;" onclick="nav('calc')">Посчитать проект</button>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="glass-box">
+        <h1>КТО МЫ И <span>ЗАЧЕМ</span></h1>
+        <div style="text-align: center; font-size: 18px; line-height: 1.8;">
+          Ваш текст. Группа компаний DWS — это команда супер-профессионалов. Мы обожаем строить и делать это качественно.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS (4 БЛОКА С ВАШИМ ФОТО) -->
+  <section id="projects">
+    <div class="container">
+      <h1 style="margin-bottom: 20px;">НАШИ <span>ПРОЕКТЫ</span></h1>
+      <div class="project-grid">
+        <!-- КАРТОЧКА 1 -->
+        <div class="project-card">
+          <div class="project-img-placeholder">
+              <img src="https://i.ibb.co/3ykL0sB/image.png" alt="DWS Project"> <!-- Ссылка на ваше фото (примерная) -->
+          </div>
+          <div class="project-content">
+            <h3 style="color: var(--neon);">SKY TOWER</h3>
+            <p>Ваш текст. Премиальный объект.</p>
+          </div>
+        </div>
+        <!-- КАРТОЧКА 2 -->
+        <div class="project-card">
+          <div class="project-img-placeholder">
+              <img src="https://i.ibb.co/3ykL0sB/image.png" alt="DWS Project">
+          </div>
+          <div class="project-content">
+            <h3 style="color: var(--neon);">DWS RESIDENCE</h3>
+            <p>Ваш текст. Жилой комплекс.</p>
+          </div>
+        </div>
+        <!-- КАРТОЧКА 3 -->
+        <div class="project-card">
+          <div class="project-img-placeholder">
+              <img src="https://i.ibb.co/3ykL0sB/image.png" alt="DWS Project">
+          </div>
+          <div class="project-content">
+            <h3 style="color: var(--neon);">INDUSTRIAL HUB</h3>
+            <p>Ваш текст. Промышленный парк.</p>
+          </div>
+        </div>
+        <!-- КАРТОЧКА 4 -->
+        <div class="project-card">
+          <div class="project-img-placeholder">
+              <img src="https://i.ibb.co/3ykL0sB/image.png" alt="DWS Project">
+          </div>
+          <div class="project-content">
+            <h3 style="color: var(--neon);">CITY PLAZA</h3>
+            <p>Ваш текст. Торговый центр.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALC -->
+  <section id="calc">
+    <div class="container">
+      <h1 style="margin-bottom: 20px;">ДАВАЙТЕ <span>ПОСЧИТАЕМ</span></h1>
+      <div style="display: flex; justify-content: center;">
+        <div class="order-panel">
+          <select id="type" class="field-box" style="background: #001a33;" onchange="updateCalc()">
+            <option value="65000">Промышленные объекты</option>
+            <option value="85000">Общественные здания</option>
+            <option value="125000">Офисные центры</option>
+            <option value="75000">Торговые площади</option>
+            <option value="145000">Отели и Гостиницы</option>
+          </select>
+          <input type="text" id="area" class="field-box" placeholder="Площадь (м²)" maxlength="12" oninput="updateCalc()">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 15px; background: rgba(0,242,255,0.1); padding: 15px; border-radius: 12px;">
+            <div>Цена м²: <b id="v-m2">65 000 ₽</b></div>
+            <div>Смета: <b id="v-total">0 ₽</b></div>
+          </div>
+          <input type="text" id="name" class="field-box" placeholder="Ваше имя">
+          <input type="tel" id="phone" class="field-box" value="+7">
+          <textarea id="tz" class="field-box" rows="2" placeholder="Описание проекта"></textarea>
+          <button id="send-btn" class="btn-action" onclick="sendOrder()" disabled>Отправить заявку</button>
+          <div id="status" style="margin-top: 10px; text-align: center; color: var(--neon); font-weight: 900;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="glass-box" style="margin: 0;">
+        <h1>МЫ НА <span>СВЯЗИ</span></h1>
+        <p style="font-size: 24px; font-weight: 600;">Ваш текст, Деловой Центр "DWS". <br> Звоните: +7 (999) Ваш текст.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>&copy; 2026 DWS MASTER. ВАШ ТЕКСТ</footer>
+
+  <script>
+    function toggleTheme() { document.body.classList.toggle('dark-theme'); }
+
+    function nav(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      setTimeout(() => {
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(l => { if(l.getAttribute('onclick').includes(id)) l.classList.add('active'); });
+      }, 50);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateCalc() {
+      const m2 = parseInt(document.getElementById('type').value);
+      const areaVal = document.getElementById('area').value.replace(/\D/g, '');
+      const area = parseInt(areaVal) || 0;
+      document.getElementById('v-m2').innerText = m2.toLocaleString() + " ₽";
+      document.getElementById('v-total').innerText = (m2 * area).toLocaleString() + " ₽";
+      validate();
+    }
+
+    const phone = document.getElementById('phone');
+    const btn = document.getElementById('send-btn');
+    phone.oninput = (e) => {
+      let v = e.target.value; if(!v.startsWith('+7')) v = '+7' + v.replace(/\D/g, '');
+      let d = v.slice(2).replace(/\D/g, ''); if(d.length > 10) d = d.substring(0, 10);
+      e.target.value = '+7' + d; validate();
+    };
+
+    function validate() {
+      const d = phone.value.slice(2).replace(/\D/g, '');
+      btn.disabled = !(d.length === 10 && document.getElementById('area').value.length > 0 && document.getElementById('name').value.length > 1);
+    }
+    document.getElementById('name').oninput = validate;
+
+    async function sendOrder() {
+      const s = document.getElementById('status'); s.innerText = "ОТПРАВЛЯЕМ...";
+      const n = document.getElementById('name').value;
+      const p = phone.value;
+      const t = document.getElementById('type').options[document.getElementById('type').selectedIndex].text;
+      const a = document.getElementById('area').value;
+      const total = document.getElementById('v-total').innerText;
+      const tz = document.getElementById('tz').value || "Нет описания";
+
+      const TOKEN = '8024983218:AAEOib7wTWosOWoB-shxkYmV_4iZMdvE3sk';
+      const CHAT = '1044406442';
+      const msg = `🧸 *ЗАЯВКА V15*\n👤 Имя: ${n}\n📞 Тел: ${p}\n🏗 Тип: ${t}\n📏 Площадь: ${a} м²\n💰 Смета: ${total}\n📝 ТЗ: ${tz}`;
+
+      try {
+        const r = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CHAT, text: msg, parse_mode: 'Markdown' })
+        });
+        if(r.ok) { s.innerText = "✅ ВСЕ ОК!"; phone.value = "+7"; validate(); }
+      } catch(e) { s.innerText = "ОШИБКА"; }
+    }
+
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let points = [];
+    function init() {
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      points = []; for(let i=0; i<40; i++) points.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5), vy: (Math.random()-0.5)});
+    }
+    function draw() {
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(0, 242, 255, 0.3)";
+      points.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x<0 || p.x>canvas.width) p.vx*=-1; if(p.y<0 || p.y>canvas.height) p.vy*=-1;
+        for(let j=i+1; j<points.length; j++) {
+          let d = Math.hypot(p.x-points[j].x, p.y-points[j].y);
+          if(d < 150) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(points[j].x, points[j].y); ctx.stroke(); }
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize', init); init(); draw();
+
+    document.onkeydown = (e) => {
+      if (e.keyCode === 123 || (e.ctrlKey && e.keyCode === 85)) return false;
+    };
+  </script>
+</body>
+</html>
